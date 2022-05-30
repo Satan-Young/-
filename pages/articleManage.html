@@ -1,0 +1,228 @@
+<div class="articleManage">
+    <!-- 资讯管理 -->
+
+    <!-- 按钮区 -->
+    <div class="btns">
+        <button type="button" class="btn btn-info toAdd">发布咨询</button>
+    </div>
+
+    <!-- 表格区 -->
+    <div class="tables">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>标题</th>
+                    <th>发布日期</th>
+                    <th>所属栏目</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                  </tr> -->
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal modalView" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <p>Modal body text goes here.</p> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modalEdit" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    所属栏目：<input type="text" list="categoryList" name="category">
+                    <datalist id="categoryList">
+                        <option>校园新闻</option>
+                        <option>通知公告</option>
+                        <option>学术活动</option>
+                        <option>媒体聚焦</option>
+                        <option>学院快讯</option>
+                    </datalist>
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">*标题:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="articleTitle">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">*正文:</label>
+                            <textarea class="form-control" id="message-text" name="articleArea"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-primary submit">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .articleManage>.tables {
+        margin: 1em .5em;
+    }
+    
+    .tables td {
+        font-size: 14px;
+        color: #606266;
+    }
+    
+    .tables button {
+        border: 0;
+        background-color: #fff;
+        color: #606266;
+    }
+    
+    .modal {
+        display: none;
+    }
+    
+    .modal-dialog {
+        margin: 20px auto;
+        max-width: 75%;
+    }
+</style>
+
+<script>
+    $(function() {
+        function load() {
+            myAjax.get('/article/cascadeFindAll', res => {
+                console.log(res.data);
+                res.data.forEach((item, index) => {
+                    var newTr = (`
+                 <tr>
+                      <td>${index+1}</td>
+                      <td>${item.title}</td>
+                      <td>${getFormatDate(item.publishTime)}</td>
+                      <td>${item.category.name}</td>
+                      <td>
+                        <button data-id=${item.id} class='view'>查看</button>
+                        <button class='edit' data-item='${JSON.stringify(item)}'>编辑</button>
+                        <button class='delete' data-id=${item.id}>删除</button>
+                      </td>
+                </tr> 
+                `);
+                    $('.table tbody').append(newTr);
+                });
+            }, err => {
+                console.log('咨询管理页面加载失败');
+            })
+        };
+        load();
+
+        // 时间函数
+        function getFormatDate(str) {
+            var oDate = new Date(str),
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth() + 1,
+                oDay = oDate.getDate(),
+                oTime = oYear + '-' + oMonth + '-' + oDay; //最后拼接时间
+            return oTime;
+        };
+
+        // 查看文章
+        $('.table tbody').on('click', '.view', function() {
+            // console.log(this);
+            var id = $(this).attr('data-id');
+            // console.log(id);
+            myAjax.getData('/article/findAll', id, res => {
+                $('.modalView .modal-body').empty();
+                res.data.forEach((item, index) => {
+                    if (Number(id) === item.id) {
+                        // console.log(item.content);
+                        $('.modalView .modal-body').append(item.content)
+                        $('.modalView').modal('show');
+                    }
+                })
+            }, err => {
+                console.log('文章显示失败');
+            })
+        });
+
+        // 删除
+        $('.tables tbody').on('click', '.delete', function() {
+            // 拿到要删除行的id值
+            var id = $(this).attr('data-id');
+            // console.log(id);
+            if (confirm('是否确认删除')) {
+                // 对接口
+                myAjax.delete('/article/deleteById', id, (res) => {
+                    $('.tables tbody').empty();
+                    load();
+                    console.log('删除成功');
+                }, (err => {
+                    console.log('删除失败');
+                }))
+            } else {
+                alert('取消删除')
+            }
+        });
+
+        // 编辑文章
+        $('.table tbody').on('click', '.edit', function() {
+            $('.modalEdit').modal('show');
+            var data = JSON.parse($(this).attr('data-item'));
+            console.log(data);
+            $('input[name=category]').val(data.category.name);
+            $('input[name=articleTitle]').val(data.title);
+            $('textarea[name="articleArea"]').val(data.content);
+        });
+        // 发布咨询
+        $('.btns .toAdd').click(function() {
+            $('.modalEdit').modal('show');
+        });
+        // 提交
+        $('.submit').click(function() {
+            var obj = {
+                categoryId: $('input[name=category]').val(),
+                content: $('textarea[name="articleArea"]').val(),
+                title: $('input[name="articleTitle"]').val()
+            };
+            if (obj.categoryId === '通知公告') {
+                obj.categoryId = 4;
+            } else if (obj.categoryId === '校园新闻') {
+                obj.categoryId = 3;
+            } else {
+                obj.categoryId = null;
+            }
+            myAjax.postForm('/article/saveOrUpdate', obj, res => {
+                $('.tables tbody').empty();
+                load();
+                console.log('发布咨询/编辑成功');
+                $('.modalEdit').modal('hide');
+            }, err => {
+                console.log('发布咨询/编辑失败');
+                $('.modalEdit').modal('hide');
+            })
+        })
+    })
+</script>

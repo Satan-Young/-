@@ -1,0 +1,189 @@
+<div class="category">
+    <!-- 栏目管理 -->
+    <!-- 看点咨询 阅读APP的后台管理 栏目下是文章 -->
+
+    <!-- 按钮区 -->
+    <div class="btns">
+        <button type="button" class="btn btn-info toAdd">新增</button>
+    </div>
+
+    <!-- 表格区 -->
+    <div class="tables">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>校园新闻</th>
+                    <th>排序号</th>
+                    <th>描述</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分页区 -->
+    <div class="pages"></div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">新增栏目</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">栏目名称</label>
+                            <input type="text" class="form-control" id="recipient-name" name="categoryName">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">栏目描述</label>
+                            <textarea class="form-control" id="message-text" name="categoryDes"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary submit">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<style>
+    /* 表格样式 */
+    
+    .category>.tables {
+        margin: 1em .5em;
+    }
+    
+    .category>.tables .fa-pencil {
+        margin-right: 1em;
+        color: #2cb5ac;
+    }
+    
+    .category>.tables .fa-trash {
+        color: red;
+    }
+    
+    .tables td {
+        font-size: 14px;
+        color: #606266;
+    }
+    
+    .tables button {
+        border: 0;
+        background-color: #fff;
+        color: #606266;
+    }
+</style>
+<script>
+    // 
+    $(function() {
+        // user的全局置空
+        var user = null;
+        // 加载findAll栏目数据
+        function load() {
+            myAjax.get('/category/findAll', (res) => {
+                // 先清空表单 防止数据重复追加
+                $('.tables tbody').empty();
+                console.log('请求成功', res.data);
+                // 遍历res.data数组追加到tbody中
+                res.data.forEach((item, index) => {
+                    // 动态创建新节点
+                    // data-id=$(item.id)是为了获取当前的id
+                    var newTr = $(`
+                  <tr>
+                    <td>${index+1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.no==null?'':item.no}</td>
+                    <td>${item.description==null?'':item.description}</td>
+                    <td>
+                      <i class="fa fa-pencil" data-item='${JSON.stringify(item)}'></i>
+                      <i class="fa fa-trash" data-id=${item.id}></i>
+                      </td>
+                </tr>
+                  `);
+                    // 追加节点
+                    $('.tables tbody').append(newTr);
+                });
+            }, (err) => {
+                console.log('请求失败');
+            });
+        };
+        load();
+
+        // 新增  点击->弹出模态框->取消关闭模态框->确定提交数据
+        $('.toAdd').click(function() {
+            // 弹出模态框
+            $('#exampleModal').modal('show');
+        });
+        // 点击提交 对接新增接口  POST /category/saveOrUpdate
+        // 有id为修改 无id为新增
+        $('.submit').click(function() {
+            // 给后台要传的数据
+            var obj = {
+                id: user ? user.id : null,
+                name: $('.modal-body input').val(),
+                description: $('.modal-body textarea').val()
+            };
+            // 对接口
+            myAjax.postForm('/category/saveOrUpdate', obj, (res) => {
+                // 提交成功 刷新界面数据
+                load();
+                $('#exampleModal').modal('hide')
+            }, (err) => {
+                console.log('栏目新增/修改失败');
+            });
+            $('#exampleModal').modal('hide')
+        });
+
+        //单个删除
+        // 删除按钮并不是直接写在tbody内  是通过动态追加的  所以通过事件代理绑定给父元素
+        // 通过id删除 拿item的id
+        $('.tables tbody').on('click', '.fa-trash', function() {
+            // 拿到要删除行的id值
+            var id = $(this).attr('data-id');
+            console.log(id);
+            if (confirm('是否确认删除')) {
+                // 对接口
+                myAjax.delete('/category/deleteById', id, (res) => {
+                    load();
+                    console.log('删除成功');
+                }, (err => {
+                    console.log('删除失败');
+                }))
+            } else {
+                alert('取消删除')
+            }
+        });
+
+        //单个编辑 
+        $('.tables tbody').on('click', '.fa-pencil', function() {
+            // console.log(this);
+            // console.log($(this).attr('data-item'));
+            user = JSON.parse($(this).attr('data-item'));
+            console.log(user);
+            // 先将当前数据user给到模态款对应的字段
+            $('input[name="categoryName"]').val(user.name);
+            $('textarea[name="categoryDes"]').val(user.description);
+            // 让模态框显示
+            $('#exampleModal').modal('show');
+        })
+    })
+</script>

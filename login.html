@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 响应式布局 viewport-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录界面</title>
+    <link rel="stylesheet" href="./css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./bootstrap-4.6.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./css/login.css">
+    <script src="./js/jquery-3.5.1.js"></script>
+    <script src="./bootstrap-4.6.1-dist/js/bootstrap.js"></script>
+    <script src="./js/qs-6.9.4.min.js"></script>
+    <script src="./js/http.js"></script>
+
+</head>
+
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <h2>资讯管理系统</h2>
+    </div>
+    <!-- /头部 -->
+
+    <!-- 中间内容区 -->
+    <article>
+        <!-- 左侧 -->
+        <div class="img">
+            <img src="./images/login-background.png" alt="">
+        </div>
+        <!-- /左侧 -->
+        <!-- 右侧 -->
+        <!-- 登录表单 -->
+        <div class="form">
+            <div class="title">用户名密码登录</div>
+            <!-- username -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">
+                    <i class="fa fa-user"></i>
+                  </span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name="username">
+            </div>
+            <!-- /username -->
+            <!-- password -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                    <i class="fa fa-lock"></i>
+                </span>
+                </div>
+                <input type="password" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Password" name="password">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                    <i class="fa fa-eye-slash"></i>
+                </span>
+                </div>
+            </div>
+            <!-- /password -->
+            <!-- 登录按钮 -->
+            <button type="button" class="btn btn-primary btn-lg btn-block">登录</button>
+            <!-- /登录按钮 -->
+        </div>
+        <!-- /登录表单 -->
+        <!-- /右侧 -->
+    </article>
+    <!-- /中间内容区 -->
+
+    <script>
+        $(function() {
+            // 登录逻辑
+            /*
+            点击登录 对接接口/user/login 
+            res->跳转到系统内页(token需要存储到sessionStorage中)
+            err->什么问题登录不成功
+            */
+            $('.btn-lg').click(function() {
+                var user = {
+                    // 选中name为username的input
+                    username: $('input[name="username"]').val(),
+                    password: $('input[name="password"]').val()
+                };
+                // 发送请求 /user/login
+                myAjax.login(user, (res) => {
+                    // 拿到token 存到会话存储中
+                    sessionStorage.setItem('token', res.data.token);
+                    // 跳转 
+                    location.href = './index.html'
+                }, (err) => {
+                    console.log('登录失败', err);
+                    location.href = './login.html'
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

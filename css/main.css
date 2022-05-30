@@ -1,0 +1,257 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+nav,
+article,
+img,
+section,
+header,
+aside,
+address {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+}
+
+
+/* 左侧开始 */
+
+body>nav {
+    width: 210px;
+}
+
+body>nav header,
+body>article header {
+    height: 50px;
+}
+
+body>nav header {
+    background-color: #2cb5ac;
+    overflow: hidden;
+}
+
+body>nav header>img {
+    margin: 9px 12px 0 41px;
+}
+
+body>nav header>span {
+    color: white;
+    line-height: 52px;
+    font-size: 14px;
+}
+
+body>nav header>* {
+    float: left;
+}
+
+body>nav img {
+    width: 32px;
+    height: 32px;
+}
+
+body>nav li {
+    line-height: 42px;
+    padding: 0 20px;
+    color: rgb(102, 102, 102);
+    font-weight: 400;
+    font-size: 14px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.liheight {
+    height: 42px;
+}
+
+body .list>ul>li:hover {
+    background-color: #f3f3f9;
+}
+
+body .list>ul>li:nth-child(2):hover {
+    background-color: transparent;
+}
+
+body .list>ul>li .more {
+    float: right;
+}
+
+.childul {
+    float: left;
+    width: 100%;
+    display: none;
+}
+
+.childul li:hover {
+    background-color: #f3f3f9;
+}
+
+.nav-active-li {
+    background-color: #f3f3f9;
+}
+
+body>nav li i {
+    margin: 0 10px 0 0;
+}
+
+body>nav li span {
+    font-size: 14px;
+}
+
+
+/* 左侧结束 */
+
+
+/* 右侧开始 */
+
+body>article {
+    flex: 1;
+    /* background-color:pink; */
+}
+
+body>article header {
+    height: 50px;
+    padding: 0 10px 0 20px;
+    box-shadow: 1px 1px 1px 1px #ccc;
+    /* overflow: hidden; */
+}
+
+body>article header .menu {
+    line-height: 50px;
+    float: left;
+}
+
+body>article header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+body>article .user-info {
+    float: right;
+    /* overflow: hidden; */
+    position: relative;
+}
+
+.user-image {
+    line-height: 20px;
+    overflow: hidden;
+}
+
+.user-image img,
+.user-image i {
+    float: left;
+    margin-top: 5px;
+}
+
+.user-image i {
+    margin-top: 28px;
+    margin-left: 10px;
+    color: #777;
+}
+
+.user-info:hover .user-child {
+    display: block;
+}
+
+.user-child {
+    box-shadow: 1px 1px 1px 1px #ccc;
+    line-height: 20px;
+    position: absolute;
+    top: 46px;
+    right: 0px;
+    display: none;
+    background-color: white;
+}
+
+.user-child>div {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.user-child>div:hover {
+    background-color: #f3f3f9;
+}
+
+body>article .content {
+    height: calc(100% - 70px);
+    background-color: #f3f3f9;
+    padding: 10px;
+}
+
+body>article .content .containers {
+    background-color: white;
+    border-radius: 5px;
+    height: 100%;
+    padding: 10px;
+}
+
+
+/* 公共样式 */
+
+
+/* .btn {
+  width: 55px;
+  height: 31px;
+  background-color: #777;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 1px 1px 1px #ccc;
+} */
+
+.btn-success {
+    background-color: #2cb5ac;
+}
+
+.btn-error {
+    background-color: #FF0000;
+}
+
+
+/* 表格公共样式 */
+
+
+/* .table {
+  width: 100%;
+  border: 1px solid #2cb5ac;
+  border-collapse: collapse;
+  text-align: center;
+  line-height: 34px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #2cb5ac;
+} */
+
+
+/* .table thead tr {
+  background-color: #2cb5ac;
+  background-color: rgba(44, 181, 172, 0.6);
+} */
+
+
+/* striped 条纹 */
+
+
+/* .striped tbody tr:nth-child(even) {
+  background-color: rgba(44, 181, 172, 0.3);
+} */

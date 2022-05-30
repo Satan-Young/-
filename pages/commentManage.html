@@ -1,0 +1,169 @@
+<div class="commentManage">
+    <!-- 评论管理 -->
+    <!-- 表格区 -->
+    <div class="tables">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>评论内容</th>
+                    <th>评论日期</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .tables th {
+        text-align: center;
+    }
+    
+    .tables td {
+        font-size: 14px;
+        color: #606266;
+        text-align: center;
+    }
+    
+    .tables button {
+        border: 0;
+        background-color: #fff;
+        color: #606266;
+    }
+    
+    .status div {
+        margin: 0px auto;
+        width: 100px;
+        /* height: 20px; */
+        background-color: #fff8e6;
+        color: #ffba00;
+        text-align: center;
+        border-radius: 6px;
+    }
+    
+    .tables .delete {
+        color: #2cb5ac;
+    }
+    
+    .tables .pass {
+        color: #2cb5ac;
+    }
+    
+    .tables .noPass {
+        color: #2cb5ac;
+    }
+</style>
+
+<script>
+    $(function() {
+        function load() {
+            $('.table tbody').empty()
+            myAjax.get('/article/cascadeFindAll', res => {
+                // console.log(res.data);
+                res.data.forEach((item, index) => {
+                    if (item.comments.length != 0) {
+                        item.comments.forEach((item, index) => {
+                            var newTr = (`
+                        <tr>
+                          <td>${item.id}</td>
+                          <td>${item.content}</td>
+                          <td>2021-5-3</td>
+                          <td class='status'><div id='${item.id}'>${item.status}</div></td>
+                          <td> 
+                            <button class='delete' id='d${item.id}' data-id='${item.id}'>删除</button>
+                            <button class='pass' id='p${item.id}' data-item='${JSON.stringify(item)}'>通过</button>
+                            <button class='noPass' id='n${item.id}' data-item='${JSON.stringify(item)}'>不通过</button>
+                          </td>
+                      </tr>
+                         `);
+                            $('.table tbody').append(newTr);
+                            var id = '#' + item.id;
+                            // var text = $(id).text();
+                            // console.log(text);
+                            if ($(id).text() === '审核通过' || $(id).text() === '审核未通过') {
+                                var pId = '#p' + item.id;
+                                var nId = '#n' + item.id;
+                                $(pId).css({
+                                    cursor: 'not-allowed',
+                                    color: '#606266'
+                                });
+                                $(nId).css({
+                                    cursor: 'not-allowed',
+                                    color: '#606266'
+                                })
+                            }
+                            text = ''
+                        });
+                    };
+
+                });
+            }, err => {
+                console.log('评论管理加载失败');
+            });
+        };
+        load();
+        //删除
+        $('.tables tbody').on('click', '.delete', function() {
+            // 拿到要删除行的id值
+            var id = $(this).attr('data-id');
+            console.log(id);
+            if (confirm('是否确认删除')) {
+                // 对接口
+                myAjax.delete('/comment/deleteById', id, (res) => {
+                    load();
+                    console.log('删除成功');
+                }, (err => {
+                    console.log('删除失败');
+                }))
+            } else {
+                alert('取消删除')
+            }
+        });
+        // 通过
+        $('.tables tbody').on('click', '.pass', function() {
+            // 拿到要删除行的id值
+            data = JSON.parse($(this).attr('data-item'));
+            // console.log(data);
+            var obj = {
+                id: data.id,
+                status: '审核通过',
+            };
+            if (confirm('是否确认审核通过')) {
+                // 对接口
+                myAjax.getData('/comment/check', obj, (res) => {
+                    load();
+                    console.log('审核通过成功');
+                }, (err => {
+                    console.log('审核通过失败');
+                }))
+            } else {
+                alert('取消审核通过')
+            }
+        });
+        // 不通过
+        $('.tables tbody').on('click', '.noPass', function() {
+            // 拿到要删除行的id值
+            data = JSON.parse($(this).attr('data-item'));
+            // console.log(data);
+            var obj = {
+                id: data.id,
+                status: '不通过',
+            };
+            if (confirm('是否确认不通过')) {
+                // 对接口
+                myAjax.getData('/comment/check', obj, (res) => {
+                    load();
+                    console.log('审核不通过成功');
+                }, (err => {
+                    console.log('审核不通过失败');
+                }))
+            } else {
+                alert('取消审核不通过')
+            }
+        });
+    })
+</script>

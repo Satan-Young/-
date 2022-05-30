@@ -1,0 +1,186 @@
+<div class="userInfo">
+    <!-- 个人信息 -->
+    <div class="info">
+        <div class="tr">
+            <div class="title">用户名</div>
+            <div class="data" id="data-1"></div>
+        </div>
+        <div class="tr">
+            <div class="title">姓 名</div>
+            <div class="data" id="data-2"></div>
+        </div>
+        <div class="tr">
+            <div class="title">手机号</div>
+            <div class="data" id="data-3"></div>
+        </div>
+        <div class="tr">
+            <div class="title">性 别</div>
+            <div class="data" id="data-4"></div>
+        </div>
+        <div class="tr">
+            <div class="title">注册时间</div>
+            <div class="data" id="data-5"></div>
+        </div>
+        <div class="tr">
+            <div class="title">状 态</div>
+            <div class="data" id="data-6"></div>
+        </div>
+    </div>
+
+    <!-- 修改按钮 -->
+    <div class="btns">
+        <!-- <button type="button" class="btn btn-info toedit">修改</button> -->
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">修改个人信息</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            用户名：
+                            <input type="text" class="form-control" id="recipient-name" name="username" disabled="disabled">
+                        </div>
+                        <div class="form-group">
+                            密码：
+                            <input type="password" class="form-control" id="recipient-name" name="userPassword">
+                        </div>
+                        <div class="form-group">
+                            姓名：
+                            <input type="text" class="form-control" id="recipient-name" name="userRealName">
+                        </div>
+                        <div class="form-group">
+                            手机号：
+                            <input type="text" class="form-control" id="recipient-name" name="userTelephone">
+                        </div>
+                        <div class="form-group">
+                            性别：
+                            <input type="radio" name="userSex" id="male">男
+                            <input type="radio" name="userSex" id="female">女
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary submit">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<style>
+    .btns {
+        margin-left: 15px;
+        margin-top: 10px;
+    }
+    
+    .tr {
+        width: 250px;
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    .title {
+        width: 80px;
+        font-weight: 700;
+    }
+    
+    .data {
+        width: 100px;
+        color: #999;
+    }
+</style>
+<script>
+    $(function() {
+        var token = {
+            token: sessionStorage.getItem('token')
+        };
+        // 页面加载
+        function load(payload) {
+            console.log(payload);
+            myAjax.getData('/user/info', payload, res => {
+                console.log('个人信息数据请求成功');
+                $('#data-1').text(res.data.username);
+                $('#data-2').text(res.data.realname);
+                $('#data-3').text(res.data.telephone);
+                $('#data-4').text(res.data.gender == 'male' ? '男' : '女');
+                $('#data-5').text(getFormatDate(res.data.registerTime));
+                $('#data-6').text(res.data.status);
+                var btn = (` <button type="button" class="btn btn-info toedit" data-item='${JSON.stringify(res.data)}'>修改</button>`);
+                $('.btns').append(btn);
+            }, err => {
+                console.log('个人信息数据请求失败');
+            })
+        };
+        load(token);
+
+        function getFormatDate(str) {
+            var oDate = new Date(str),
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth() + 1,
+                oDay = oDate.getDate(),
+                oTime = oYear + '-' + oMonth + '-' + oDay; //最后拼接时间
+            return oTime;
+        };
+        $('.btns').on('click', '.toedit', function() {
+            data = JSON.parse($(this).attr('data-item'));
+            // console.log(data);
+            $('#exampleModal').modal('show');
+            $('input[name=username]').val(data.username);
+            $('input[name=userPassword]').val(data.password);
+            $('input[name=userRealName]').val(data.realname);
+            $('input[name=userTelephone]').val(data.telephone);
+            if (data.gender === 'male') {
+                $('input[id=male]').prop('checked', true);
+            } else {
+                $('input[id=female]').prop('checked', true);
+            }
+        });
+        $('.submit').click(function() {
+            // 给后台要传的数据
+            var data = JSON.parse($('.toedit').attr('data-item'))
+                // console.log(data);
+            var obj = {
+                // 不需要改的数据
+                id: data.id,
+                username: data.username,
+
+                birth: data.birth,
+                registerTime: data.registerTime,
+                status: data.status,
+                userFace: data.userFace,
+                idCard: data.idCard,
+                address: data.address,
+                nation: data.nation,
+                politicsStatus: data.politicsStatus,
+                // username: $('.modal-body input[name=username]').val(),
+                // 需要修改的数据
+                password: $('.modal-body input[name=userPassword]').val(),
+                realname: $('.modal-body input[name=userRealName]').val(),
+                telephone: $('.modal-body input[name=userTelephone]').val(),
+                gender: $('.modal-body input[name=userSex]:checked').attr('id'),
+
+            };
+            // console.log(obj);
+            // 对接口
+            myAjax.postForm('/baseUser/saveOrUpdate', obj, (res) => {
+                // 提交成功 刷新界面数据
+                $('.btns').empty();
+                load(token);
+                $('#exampleModal').modal('hide')
+            }, (err) => {
+                console.log('用户信息加载失败');
+            });
+            $('#exampleModal').modal('hide')
+        })
+    })
+</script>

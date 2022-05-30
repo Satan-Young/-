@@ -1,0 +1,197 @@
+<div class="privilege">
+    <!-- 权限管理 -->
+
+    <!-- 按钮区 -->
+    <div class="btns">
+        <button type="button" class="btn btn-info toAdd">添加</button>
+    </div>
+
+    <!-- 表格 -->
+    <div class="tables">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>路径</th>
+                    <th>类型</th>
+                    <th>图标</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr> -->
+            </tbody>
+        </table>
+
+
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">添加权限</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">名称</label>
+                            <input type="text" class="form-control" id="recipient-name" name="privilegeId">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">路径</label>
+                            <input type="text" class="form-control" id="recipient-name" name="route">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">类型</label>
+                            <input type="text" class="form-control" id="recipient-name" name="type">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">父权限</label>
+                            <input type="text" class="form-control" id="recipient-name" name="parent">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">序号</label>
+                            <input type="text" class="form-control" id="recipient-name" name="parentId">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">描述</label>
+                            <textarea class="form-control" id="message-text" name="description"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary submit">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .accordion {
+            width: 100px;
+        }
+        
+        .tables td {
+            font-size: 14px;
+            color: #606266;
+        }
+        
+        .tables button {
+            border: 0;
+            background-color: #fff;
+            color: #606266;
+        }
+    </style>
+
+    <script>
+        $(function() {
+            // 页面加载
+            function load() {
+                myAjax.get('/privilege/findAll', res => {
+                    // "id": 18,
+                    // "name": "权限管理",
+                    // "description": null,
+                    // "route": "/sys/privilege/List",
+                    // "routeName": null,
+                    // "type": "menu",
+                    // "icon": "",
+                    // "hidden": 0,
+                    // "num": null,
+                    // "parentId": 33
+                    res.data.forEach((item, index) => {
+                        if (item.parentId == null) {
+                            var parentTr = (`
+                          <tr data-id='${item.id}' class='parent'>
+                            <td><i>></i>${item.name}</td>
+                            <td>${item.route}</td>
+                            <td>${item.type}</td>
+                            <td>${item.icon}</td>
+                            <td>${item.hidden==0?'显示':'隐藏'}</td>
+                            <td>
+                              <button>移除</button>
+                              <button>修改</button>
+                            </td>
+                          </tr>
+                        `);
+                            $('.table tbody').append(parentTr)
+                        } else {
+                            var sonTr = (`
+                          <tr data-id='${item.id}' class='son'>
+                            <td><i>></i>${item.name}</td>
+                            <td>${item.route}</td>
+                            <td>${item.type}</td>
+                            <td>${item.icon}</td>
+                            <td>${item.hidden==0?'显示':'隐藏'}</td>
+                            <td>
+                              <button class='delete' data-id='${item.id}'>移除</button>
+                              <button class='edit'  data-item='${JSON.stringify(item)}'>修改</button>
+                            </td>
+                          </tr>
+                        `);
+                            $('.table tbody').append(sonTr)
+                        }
+                        $('.table tbody .son').each(function() {
+                            // console.log(this);
+                        })
+
+                    })
+                }, err => {
+                    console.log('权限页面数据请求失败');
+                });
+            };
+            load();
+
+            // 删除
+            $('.tables tbody').on('click', '.delete', function() {
+                // 拿到要删除行的id值
+                var id = $(this).attr('data-id');
+                console.log(id);
+                if (confirm('是否确认删除')) {
+                    // 对接口
+                    myAjax.delete('/privilege/deleteById', id, (res) => {
+                        load();
+                        console.log('删除成功');
+                    }, (err => {
+                        console.log('删除失败');
+                    }))
+                } else {
+                    alert('取消删除')
+                }
+            });
+
+            // 新增
+            $('.toAdd').click(function() {
+                // 弹出模态框
+                $('#exampleModal').modal('show');
+            });
+
+            // 修改
+            $('.tables tbody').on('click', '.edit', function() {
+                data = JSON.parse($(this).attr('data-item'));
+                $('input[name=privilegeId]').val(data.id);
+                $('input[name=route]').val(data.route);
+                $('input[name=type]').val(data.type);
+                $('input[name=parent]').val(data.parentId);
+                $('input[name=parentId]').val(data.parentId);
+                $('textarea[name=description]').val(data.description);
+                $('#exampleModal').modal('show');
+            });
+
+            $('.submit').click(function() {
+                $('#exampleModal').modal('hide');
+            })
+        })
+    </script>

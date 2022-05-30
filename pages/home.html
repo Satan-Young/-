@@ -1,0 +1,250 @@
+<div class="home">
+    <!-- 首页 -->
+
+    <!-- 顶部卡片 -->
+    <div class="topCard">
+        <div class="card mb-3" style="max-width: 540px;" id="topCarModel-1">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="../images/1.png" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-title">校 内 新 闻</p>
+                        <p class="card-text">20</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="../images/2.png" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-title">通 知 公 告</p>
+                        <p class="card-text">20 </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="../images/3.png" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-title">学 术 活 动</p>
+                        <p class="card-text">30</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="../images/4.png" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-title">媒 体 聚 焦</p>
+                        <p class="card-text">84 </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部卡片 -->
+    <div class="footerCard">
+        <div class="card fCard">
+            <img src="../images/11.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="card-title">校园新闻</p>
+            </div>
+            <ul class="list-group list-group-flush" id="category3">
+                <!-- <li class="list-group-item">An item</li>
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li> -->
+            </ul>
+        </div>
+        <div class="card fCard">
+            <img src="../images/22.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="card-title">通知公告</p>
+            </div>
+            <ul class="list-group list-group-flush" id="category4">
+                <!-- <li class="list-group-item">An item</li>
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li> -->
+            </ul>
+        </div>
+        <div class="card fCard">
+            <img src="../images/33.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="card-title">学术活动</p>
+            </div>
+            <ul class="list-group list-group-flush" id="category5">
+                <li class="list-group-item">暂无数据</li>
+                <!-- <li class="list-group-item">暂无数据</li> -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- 模态框 用来显示文章 -->
+    <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <p>Modal body text goes here.</p> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 模态框 */
+    
+    .modal {
+        display: none;
+    }
+    
+    .modal-dialog {
+        margin: 20px auto;
+        max-width: 75%;
+    }
+    /* 顶部卡片 */
+    
+    .topCard {
+        display: flex;
+        height: 100px;
+        justify-content: space-around;
+    }
+    
+    .mb-3 {
+        margin-left: 35px;
+        padding: 25px 10px 10px 20px;
+        height: 100px;
+        width: 20%;
+        box-shadow: 2px 2px 10px #ccc;
+        border-radius: 4px;
+    }
+    
+    .col-md-4>img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .card-body {
+        padding: 0px;
+        text-align: center;
+    }
+    
+    .card-title {
+        color: #777;
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .card-text {
+        font-weight: 600;
+        font-size: 18px;
+    }
+    /* 底部卡片 */
+    
+    .footerCard {
+        display: flex;
+        justify-content: space-around;
+        height: 500px;
+        margin-top: 30px;
+    }
+    
+    .fCard {
+        width: 30%;
+        display: block;
+        box-shadow: 2px 2px 10px #ccc;
+        border-radius: 4px;
+    }
+    
+    .fCard>img {
+        height: 177px;
+    }
+    
+    .fCard>.card-body {
+        height: 30px;
+    }
+    
+    .list-group>li {
+        height: 30px;
+        font-size: 13px;
+        text-align: center;
+        line-height: 12px;
+        color: #606266;
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .list-group>li:hover {
+        background-color: #ccc;
+    }
+</style>
+<script>
+    $(function() {
+        // 加载数据
+        function load() {
+            myAjax.get('/article/findAll', res => {
+                // console.log(res.data);
+                res.data.forEach((item, index) => {
+                    var newLi = $(`
+                  <li class="list-group-item" data-id=${item.id}>${item.title}</li>
+                  `);
+                    // 追加节点
+                    // 判断加给哪个组
+                    if (item.categoryId === 4) {
+                        $('#category4').append(newLi);
+                    } else if (item.categoryId == 3) {
+                        $('#category3').append(newLi);
+                    } else {
+                        var nullContent = $(`
+                  <li class="list-group-item">暂无数据</li>
+                  `);
+                        $('#category5').append(nullContent);
+                    }
+                });
+            }, err => {
+                console.log('内容加载失败');
+            });
+        };
+        load();
+        // 显示文章 采用事件代理
+        $('.list-group').on('click', '.list-group-item', function() {
+            // console.log(this);
+            var id = $(this).attr('data-id');
+            // console.log(id);
+            myAjax.getData('/article/findAll', id, res => {
+                $('.modal-body').empty();
+                res.data.forEach((item, index) => {
+                    if (Number(id) === item.id) {
+                        // console.log(item.content);
+                        $('.modal-body').append(item.content)
+                        $('.modal').modal('show');
+                    }
+                })
+            }, err => {
+                console.log('文章显示失败');
+            })
+        })
+    })
+</script>

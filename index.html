@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>资讯管理系统</title>
+  <link rel="stylesheet" href="./bootstrap-4.6.1-dist/css/bootstrap.css">
+  <link rel="stylesheet" href="./css/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/animate-4.1.1.min.css">
+  <script src="./js/jquery-3.5.1.js"></script>
+  <script src="./bootstrap-4.6.1-dist/js/bootstrap.js"></script>
+  <script src="./js/qs-6.9.4.min.js"></script>
+  <script src="./js/http.js"></script>
+  <script src="./js/index.js"></script>
+  
+</head>
+
+<body>
+  <!-- 左侧 -->
+  <nav>
+    <!-- <h1 class="animate__animated animate__bounce">An animated element</h1> -->
+    <header>
+      <img src="./images/logo.png" alt="">
+      <span>资讯管理系统</span>
+    </header>
+    <nav class="list">
+      <ul>
+        <li class="nav-active-li">
+          <i class="fa fa-dashboard" title="系统首页"></i>
+          <span>系统首页</span>
+        </li>
+        <li>
+          <i class="fa fa-users" title="角色权限"></i>
+          <span>角色权限</span>
+          <div class="more">
+            <i class="fa fa-angle-down"></i>
+            <!-- <i class="fa fa-angle-up"></i> -->
+          </div>
+          <ul class="childul animate__animated">
+            <li><i class="fa fa-user-circle" title="用户管理"></i>用户管理</li>
+            <li><i class="fa fa-codepen" title="权限管理"></i>权限管理</li>
+            <li><i class="fa fa-bandcamp" title="角色管理"></i>角色管理</li>
+          </ul>
+        </li>
+        <li>
+          <i class="fa fa-align-left"></i>
+          <span title="分类管理">分类管理</span>
+        </li>
+        <li>
+          <i class="fa fa-edit" title="资讯管理"></i>
+          <span>资讯管理</span>
+        </li>
+        <li>
+          <i class="fa fa-comments-o" title="评论管理"></i>
+          <span>评论管理</span>
+        </li>
+        <li>
+          <i class="fa fa-info-circle" title="个人信息"></i>
+          <span>个人信息</span>
+        </li>
+      </ul>
+    </nav>
+  </nav>
+  <!-- 右侧 -->
+  <article>
+    <header>
+      <div class="menu"><i class="fa fa-align-justify"></i></div>
+      <div class="user-info">
+        <div class="user-image">
+          <img src="./images/user.jpg" alt="">
+          <i class="fa fa-caret-down"></i>
+        </div>
+        <div class="user-child">
+          <div>DashBoard</div>
+          <div>Log Out</div>
+        </div>
+      </div>
+    </header>
+    <article class="content">
+      <section class="containers"></section>
+    </article>
+  </article>
+</body>
+
+</html>

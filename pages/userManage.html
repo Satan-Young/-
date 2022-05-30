@@ -1,0 +1,152 @@
+<div class="user">
+    <!-- 用户管理 -->
+    <!-- 表格区 -->
+    <div class="tables">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>用户名</th>
+                    <th>真实名</th>
+                    <th>性别</th>
+                    <th>手机号</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <!-- <li class="page-item"><a class="page-link" href="#">Previous</a></li> -->
+                <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li> -->
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<style>
+    .user>.tables {
+        margin: 1em .5em;
+    }
+    
+    .user>.page {
+        float: right;
+        margin-right: 2em;
+    }
+    
+    .tables td {
+        font-size: 14px;
+        color: #606266;
+    }
+    
+    .tables button {
+        border: 0;
+        background-color: #fff;
+        color: #606266;
+    }
+</style>
+<script>
+    // 分页查询数据
+    // 可以查询任意自己想要的条数  
+    // 1.分页接口传递的参数
+    var params = {
+        page: 1, //页码
+        pageSize: 10, //每页的条数
+    };
+    // 5.对接分页需要的数据进行全局封装
+    var pages = {
+        length: null,
+        total: null
+    };
+    // 2.对接分页接口
+    function load(payload) {
+        myAjax.getData('/baseUser/pageQuery', payload, (res) => {
+            console.log('分页查询成功');
+            // 4.处理返回数据：当前页码1，每页10条，数据总长40，拿到10(page*pageSize)条数据
+            // 计算
+            // 需要数据：page pageSize total
+            // 多少页(length) = 总条数(total)/每页条数(params.pageSize)
+            pages.total = res.data.total;
+            // 有小数向上取整 4.3->5
+            pages.length = Math.ceil(pages.total / params.pageSize);
+
+            // 分页组件的渲染 传递实际参数params
+            setPage(pages);
+            $('.tables tbody').empty();
+
+            // 6.遍历表格数据
+            res.data.list.forEach((item, index) => {
+                $(`
+                  <tr>
+                    <td>${index+1}</td>
+                    <td>${item.username}</td>
+                    <td>${item.realname}</td>
+                    <td>${item.gender}</td>
+                    <td>${item.telephone}</td>
+                    <td>${item.status}</td>
+                </tr>
+                  `).appendTo('.tables tbody');
+            });
+        }, (err) => {
+            console.log('分页查询失败');
+        });
+    };
+
+    // 点击分页，完成页码切换以及数据对应加载
+    function setPage(payload) {
+        // 1.判断只有一页就不分页了
+        if (payload.length === 1) {
+            $('ul.pagination').addClass('display', 'none')
+        } else {
+            // 先让分页节点消失 再分情况追加
+            $('ul.pagination').empty();
+            // 追加
+            // 1.追加前一页
+            $('ul.pagination').append(`<li class="page-item"><a class="page-link" href="#">Previous</a></li>`);
+            // 2.追加中间页
+            for (var i = 1; i <= payload.length; i++) {
+                $('ul.pagination').append(`<li class="page-item"><a class="page-link" href="#">${i}</a></li>`);
+            }
+            // 3.追加下一页
+            $('ul.pagination').append(` <li class="page-item"><a class="page-link" href="#">Next</a></li>`);
+        }
+    };
+
+    $(function() {
+        // 3.执行分页查询
+        load(params);
+
+        // 监听页码点击事件
+        $('.page ul.pagination').on('click', 'li', function() {
+            // console.log(this);
+            // 分情况判断li里面的文字是前一页还是
+            if ($(this).text() == 'Previous') {
+                // 排除page是1的情况
+                params.page = (params.page != 1) ? (params.page - 1) : 1;
+                // page变化刷新页面
+                load(params);
+            } else if ($(this).text() == 'Next') {
+                //如果是最后一页进行判断
+                params.page = (params.page != pages.length) ? (params.page + 1) : pages.length;
+                load(params);
+            } else {
+                params.page = Number($(this).text());
+                load(params);
+            }
+        })
+    })
+</script>
